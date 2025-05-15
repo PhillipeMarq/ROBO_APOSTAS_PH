@@ -23,6 +23,7 @@ def send_message(chat_id, text):
 def gerar_analise(match, headers):
     home = match["teams"]["home"]["name"]
     away = match["teams"]["away"]["name"]
+    league_name = match["league"]["name"]
     league_id = match["league"]["id"]
     team_id = match["teams"]["home"]["id"]
 
@@ -34,12 +35,17 @@ def gerar_analise(match, headers):
         wins = stats_res["fixtures"]["wins"]["total"]
         played = stats_res["fixtures"]["played"]["total"]
     except KeyError:
-        return f"Não foi possível obter estatísticas de {home}."
+        return f"Jogo: {home} x {away} ({league_name})
+Não foi possível obter estatísticas para este time nesta competição."
 
-    text = f"Análise Pré-Jogo – {home} x {away}\n"
-    text += f"- Média de gols do {home}: {avg_goals}\n"
-    text += f"- Vitórias: {wins}/{played}\n"
-    text += f"Sugestão: Over 1.5 ou vitória do {home}\n"
+    text = f"Análise Pré-Jogo – {home} x {away} ({league_name})
+"
+    text += f"- Média de gols do {home}: {avg_goals}
+"
+    text += f"- Vitórias: {wins}/{played}
+"
+    text += f"Sugestão: Over 1.5 ou vitória do {home}
+"
     return text
 
 def get_all_brazilian_matches():
@@ -86,7 +92,7 @@ active_users = set()
 
 @app.route("/", methods=["GET"])
 def home():
-    return "Robô de Apostas com Análise Completa!"
+    return "Robô de Apostas com Análise Avançada!"
 
 @app.route(f"/{BOT_TOKEN}", methods=["POST"])
 def webhook():
