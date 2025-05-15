@@ -1,13 +1,9 @@
 from flask import Flask, request
 import requests
-import json
 
 app = Flask(__name__)
 
-with open("config.json") as f:
-    config = json.load(f)
-
-BOT_TOKEN = config["BOT_TOKEN"]
+BOT_TOKEN = "7645585466:AAFDbh4PbveXDId_bVynqElHWlQ5Ndts1a4"
 BASE_URL = f"https://api.telegram.org/bot{BOT_TOKEN}"
 
 active_users = set()
@@ -22,7 +18,7 @@ def send_message(chat_id, text):
 
 @app.route("/", methods=["GET"])
 def home():
-    return "Bot de Apostas Esportivas Online!"
+    return "Robô de Apostas Esportivas Online!"
 
 @app.route(f"/{BOT_TOKEN}", methods=["POST"])
 def webhook():
