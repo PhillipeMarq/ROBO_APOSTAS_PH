@@ -1,4 +1,3 @@
-
 from flask import Flask, request
 import requests
 import datetime
@@ -36,17 +35,12 @@ def gerar_analise(match, headers):
         wins = stats_res["fixtures"]["wins"]["total"]
         played = stats_res["fixtures"]["played"]["total"]
     except KeyError:
-        return f"Jogo: {home} x {away} ({league_name})
-Não foi possível obter estatísticas para este time nesta competição."
+        return f"Jogo: {home} x {away} ({league_name})\nNão foi possível obter estatísticas para este time nesta competição."
 
-    text = f"Análise Pré-Jogo – {home} x {away} ({league_name})
-"
-    text += f"- Média de gols do {home}: {avg_goals}
-"
-    text += f"- Vitórias: {wins}/{played}
-"
-    text += f"Sugestão: Over 1.5 ou vitória do {home}
-"
+    text = f"Análise Pré-Jogo – {home} x {away} ({league_name})\n"
+    text += f"- Média de gols do {home}: {avg_goals}\n"
+    text += f"- Vitórias: {wins}/{played}\n"
+    text += f"Sugestão: Over 1.5 ou vitória do {home}\n"
     return text
 
 def get_all_brazilian_matches():
