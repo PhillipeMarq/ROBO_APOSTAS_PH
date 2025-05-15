@@ -1,6 +1,7 @@
-# Robô de Apostas com Análise Pré-Jogo
+# Robô de Apostas - Análise Completa
 
-Comando adicional:
-/analise – Envia estatísticas e sugestões automáticas pré-jogo.
+Comandos:
+/analise – mostra todos os jogos do dia com times brasileiros  
+/analise Flamengo x Grêmio – mostra análise de um jogo específico
 
-Baseado na API-Football (plano gratuito).
+Baseado na API-Football e integrado ao Telegram.
