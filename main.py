@@ -23,17 +23,23 @@ def send_message(chat_id, text):
 def gerar_analise(match, headers):
     home = match["teams"]["home"]["name"]
     away = match["teams"]["away"]["name"]
-    stats_url = f"https://v3.football.api-sports.io/teams/statistics?team={match['teams']['home']['id']}&season=2024&league={match['league']['id']}"
+    league_id = match["league"]["id"]
+    team_id = match["teams"]["home"]["id"]
+
+    stats_url = f"https://v3.football.api-sports.io/teams/statistics?team={team_id}&season=2024&league={league_id}"
     stats_res = requests.get(stats_url, headers=headers).json()
 
-    avg_goals = stats_res["goals"]["for"]["average"]["total"]
-    wins = stats_res["fixtures"]["wins"]["total"]
-    played = stats_res["fixtures"]["played"]["total"]
+    try:
+        avg_goals = stats_res["goals"]["for"]["average"]["total"]
+        wins = stats_res["fixtures"]["wins"]["total"]
+        played = stats_res["fixtures"]["played"]["total"]
+    except KeyError:
+        return f"Não foi possível obter estatísticas de {home}."
 
-    text = f"**Análise Pré-Jogo – {home} x {away}**\\n"
-    text += f"- Média de gols do {home}: {avg_goals}\\n"
-    text += f"- Vitórias: {wins}/{played}\\n"
-    text += f"Sugestão: Over 1.5 ou vitória do {home}\\n"
+    text = f"Análise Pré-Jogo – {home} x {away}\n"
+    text += f"- Média de gols do {home}: {avg_goals}\n"
+    text += f"- Vitórias: {wins}/{played}\n"
+    text += f"Sugestão: Over 1.5 ou vitória do {home}\n"
     return text
 
 def get_all_brazilian_matches():
