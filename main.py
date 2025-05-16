@@ -78,21 +78,26 @@ def handle_analise(update: Update, context: CallbackContext):
                 print(f"Erro ao processar jogo: {e}")
                 continue
 
-# === MAIN COM WEBHOOK ===
+# === MAIN ===
 def main():
     updater = Updater(TELEGRAM_TOKEN)
     dp = updater.dispatcher
+
     dp.add_handler(CommandHandler("analise", handle_analise))
 
-    # Porta e webhook para Render
     PORT = int(os.environ.get("PORT", 10000))
     HOSTNAME = os.environ.get("RENDER_EXTERNAL_HOSTNAME")
+
+    print("✅ Bot de apostas iniciado com webhook.")
+    print(f"🌐 Webhook URL: https://{HOSTNAME}/{TELEGRAM_TOKEN}")
+
     updater.start_webhook(
         listen="0.0.0.0",
         port=PORT,
         url_path=TELEGRAM_TOKEN,
         webhook_url=f"https://{HOSTNAME}/{TELEGRAM_TOKEN}"
     )
+
     updater.idle()
 
 if __name__ == "__main__":
