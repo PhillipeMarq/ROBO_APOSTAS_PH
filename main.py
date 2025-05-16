@@ -1,39 +1,39 @@
-from flask import Flask, request
-import telegram
-import os
+@bot.message_handler(commands=["analise"])
+def analise_jogos(message):
+    texto = message.text
+    chat_id = message.chat.id
 
-# Obtem o token do bot do ambiente
-TOKEN = os.environ.get("TELEGRAM_TOKEN")
-if not TOKEN:
-    raise ValueError("O token do bot Telegram não foi definido. Configure a variável de ambiente TELEGRAM_TOKEN.")
+    if texto.strip() == "/analise":
+        bot.send_message(chat_id, "📊 Enviando análises dos jogos brasileiros de hoje...")
+        jogos = obter_jogos_brasileiros()
+        if not jogos:
+            bot.send_message(chat_id, "❌ Nenhum jogo brasileiro encontrado para hoje.")
+            return
 
-bot = telegram.Bot(token=TOKEN)
-app = Flask(__name__)
+        for jogo in jogos:
+            try:
+                bot.send_message(chat_id, f"🔍 Analisando o jogo: {jogo['homeTeam']} x {jogo['awayTeam']}...")
+                analise = gerar_analise_jogo(jogo)
+                bot.send_message(chat_id, analise)
+            except Exception as e:
+                print(f"Erro ao analisar {jogo['homeTeam']} x {jogo['awayTeam']}: {e}")
+                bot.send_message(chat_id, f"⚠️ Erro ao analisar {jogo['homeTeam']} x {jogo['awayTeam']}")
+    else:
+        nome = texto.replace("/analise", "").strip().lower()
+        if not nome:
+            bot.send_message(chat_id, "⚠️ Escreva o nome do time ou jogo após /analise")
+            return
 
-@app.route(f'/{TOKEN}', methods=['POST'])
-def webhook():
-    update = telegram.Update.de_json(request.get_json(force=True), bot)
-    
-    if update.message:
-        chat_id = update.message.chat.id
-        text = update.message.text.lower()
+        bot.send_message(chat_id, f"🔍 Analisando o jogo: {nome}...")
+        jogo = buscar_jogo_por_nome(nome)
+        if not jogo:
+            bot.send_message(chat_id, f"❌ Jogo '{nome}' não encontrado.")
+            print(f"⚠️ Nenhum jogo encontrado com o nome: {nome}")
+            return
 
-        if text == "/start":
-            bot.send_message(chat_id=chat_id, text="🤖 Olá! Robô de sinais ativo.")
-        
-        elif text == "/analise":
-            bot.send_message(chat_id=chat_id, text="📊 Enviando análises dos jogos brasileiros de hoje...")
-
-        elif text.startswith("/analise "):
-            jogo = text.replace("/analise ", "")
-            bot.send_message(chat_id=chat_id, text=f"🔍 Analisando o jogo: {jogo}...")
-
-    return 'ok'
-
-@app.route('/', methods=['GET'])
-def index():
-    return 'Robô de sinais ativo'
-
-if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 10000))
-    app.run(debug=True, host='0.0.0.0', port=port)
+        try:
+            analise = gerar_analise_jogo(jogo)
+            bot.send_message(chat_id, analise)
+        except Exception as e:
+            print(f"Erro ao analisar o jogo '{nome}': {e}")
+            bot.send_message(chat_id, "⚠️ Erro ao gerar a análise. Tente novamente.")
