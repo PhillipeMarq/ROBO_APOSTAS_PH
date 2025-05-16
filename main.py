@@ -2,27 +2,35 @@ from flask import Flask, request
 import telegram
 import os
 
-TOKEN = '7645585466:AAFDbh4PbveXDId_bVynqElHWlQ5Ndts1a4'
+# Configurações
+TOKEN = os.getenv("TELEGRAM_TOKEN")
 bot = telegram.Bot(token=TOKEN)
+
 app = Flask(__name__)
 
 @app.route(f'/{TOKEN}', methods=['POST'])
 def webhook():
     update = telegram.Update.de_json(request.get_json(force=True), bot)
-    chat_id = update.message.chat.id
-    text = update.message.text
+    
+    if update.message:
+        chat_id = update.message.chat.id
+        text = update.message.text.lower()
 
-    # Responde automaticamente ao receber mensagem
-    resposta = f"Sinal recebido: {text}"
-    bot.send_message(chat_id=chat_id, text=resposta)
+        if text == "/start":
+            bot.send_message(chat_id=chat_id, text="🤖 Olá! Robô de sinais ativo.")
+        
+        elif text == "/analise":
+            bot.send_message(chat_id=chat_id, text="📊 Enviando análises dos jogos brasileiros de hoje...")
+
+        elif text.startswith("/analise "):
+            jogo = text.replace("/analise ", "")
+            bot.send_message(chat_id=chat_id, text=f"🔍 Analisando o jogo: {jogo}...")
+
     return 'ok'
 
-@app.route('/')
-def home():
-    return "Bot de Sinais Rodando!"
+@app.route('/', methods=['GET'])
+def index():
+    return 'Robô de sinais ativo'
 
 if __name__ == '__main__':
-    chat_id_inicial = '7645585466'  # Seu ID de chat
-    bot.send_message(chat_id=chat_id_inicial, text="✅ Robô de sinais iniciado com sucesso!")
-    port = int(os.environ.get("PORT", 10000))
-    app.run(host='0.0.0.0', port=port)
+    app.run(debug=True, host='0.0.0.0', port=10000)
