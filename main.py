@@ -4,7 +4,6 @@ import datetime
 from telegram import Update
 from telegram.ext import CommandHandler, Updater, CallbackContext
 
-# === CONFIGURAÇÕES ===
 TELEGRAM_TOKEN = "7645585466:AAFDbh4PbveXDId_bVynqElHWlQ5Ndts1a4"
 API_FOOTBALL_KEY = "b9b1dfef6bmsh94b835c2f9dc5eep1cb7dajsn1e85556f5e5b"
 API_FOOTBALL_HOST = "v3.football.api-sports.io"
@@ -12,8 +11,6 @@ HEADERS = {
     "x-rapidapi-key": API_FOOTBALL_KEY,
     "x-rapidapi-host": API_FOOTBALL_HOST
 }
-
-# === FUNÇÕES ===
 
 def get_games(date_str):
     url = f"https://{API_FOOTBALL_HOST}/fixtures"
@@ -78,17 +75,19 @@ def handle_analise(update: Update, context: CallbackContext):
                 print(f"Erro ao processar jogo: {e}")
                 continue
 
-# === MAIN ===
 def main():
     updater = Updater(TELEGRAM_TOKEN)
     dp = updater.dispatcher
+
+    # remove o webhook antigo antes de configurar o novo
+    updater.bot.delete_webhook()
 
     dp.add_handler(CommandHandler("analise", handle_analise))
 
     PORT = int(os.environ.get("PORT", 10000))
     HOSTNAME = os.environ.get("RENDER_EXTERNAL_HOSTNAME")
 
-    print("✅ Bot de apostas iniciado com webhook.")
+    print("✅ Bot iniciado com webhook.")
     print(f"🌐 Webhook URL: https://{HOSTNAME}/{TELEGRAM_TOKEN}")
 
     updater.start_webhook(
