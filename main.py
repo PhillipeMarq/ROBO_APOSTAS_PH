@@ -1,12 +1,12 @@
 import os
 import requests
 import datetime
-from telegram import Bot, Update
+from telegram import Update
 from telegram.ext import CommandHandler, Updater, CallbackContext
 
 # === CONFIGURAÇÕES ===
-TELEGRAM_TOKEN = "123456:ABC-DEF_fake_token"
-API_FOOTBALL_KEY = "fake_api_key_123"
+TELEGRAM_TOKEN = "6673050306:AAEM5tU5CNOKrGLoUilqzK7EmRZnbIrAHzY"
+API_FOOTBALL_KEY = "b9b1dfef6bmsh94b835c2f9dc5eep1cb7dajsn1e85556f5e5b"
 API_FOOTBALL_HOST = "v3.football.api-sports.io"
 HEADERS = {
     "x-rapidapi-key": API_FOOTBALL_KEY,
@@ -37,14 +37,12 @@ def format_statistics(stats):
     team1_name = stats[0]["team"]["name"]
     team2_name = stats[1]["team"]["name"]
 
-    message = f"📊 Estatísticas: {team1_name} x {team2_name}
-"
+    message = f"📊 Estatísticas: {team1_name} x {team2_name}\n"
     for stat1, stat2 in zip(team1_stats, team2_stats):
         stat_name = stat1["type"]
         value1 = stat1["value"] if stat1["value"] is not None else 0
         value2 = stat2["value"] if stat2["value"] is not None else 0
-        message += f"- {stat_name}: {value1} x {value2}
-"
+        message += f"- {stat_name}: {value1} x {value2}\n"
     return message
 
 def handle_analise(update: Update, context: CallbackContext):
@@ -52,8 +50,7 @@ def handle_analise(update: Update, context: CallbackContext):
     today = datetime.datetime.now()
     dias = [today + datetime.timedelta(days=i) for i in range(4)]
 
-    if args:
-        jogo_input = " ".join(args).lower()
+    jogo_input = " ".join(args).lower() if args else None
 
     for dia in dias:
         data_str = dia.strftime("%Y-%m-%d")
@@ -64,19 +61,16 @@ def handle_analise(update: Update, context: CallbackContext):
                 time1 = jogo["teams"]["home"]["name"]
                 time2 = jogo["teams"]["away"]["name"]
                 partida = f"{time1.lower()} x {time2.lower()}"
-                if not args or jogo_input in partida:
+                if not jogo_input or jogo_input in partida:
                     liga = jogo["league"]["name"]
                     fixture_id = jogo["fixture"]["id"]
                     horario = jogo["fixture"]["date"][11:16]
                     stats = get_statistics(fixture_id)
                     estatisticas = format_statistics(stats)
                     mensagem = (
-                        f"🏆 {liga}
-"
-                        f"📅 {data_str} ⏰ {horario}
-"
-                        f"⚽ {time1} x {time2}
-"
+                        f"🏆 {liga}\n"
+                        f"📅 {data_str} ⏰ {horario}\n"
+                        f"⚽ {time1} x {time2}\n"
                         f"{estatisticas}"
                     )
                     update.message.reply_text(mensagem)
