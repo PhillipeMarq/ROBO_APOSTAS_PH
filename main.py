@@ -2,10 +2,12 @@ from flask import Flask, request
 import telegram
 import os
 
-# Configurações
-TOKEN = os.getenv("TELEGRAM_TOKEN")
-bot = telegram.Bot(token=TOKEN)
+# Obtem o token do bot do ambiente
+TOKEN = os.environ.get("TELEGRAM_TOKEN")
+if not TOKEN:
+    raise ValueError("O token do bot Telegram não foi definido. Configure a variável de ambiente TELEGRAM_TOKEN.")
 
+bot = telegram.Bot(token=TOKEN)
 app = Flask(__name__)
 
 @app.route(f'/{TOKEN}', methods=['POST'])
@@ -33,4 +35,5 @@ def index():
     return 'Robô de sinais ativo'
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=10000)
+    port = int(os.environ.get("PORT", 10000))
+    app.run(debug=True, host='0.0.0.0', port=port)
