@@ -25,9 +25,7 @@ def iniciar_bot():
     dispatcher.add_handler(CommandHandler("start", start))
     dispatcher.add_handler(CommandHandler("ajuda", ajuda))
 
-    # Você deve adicionar aqui os handlers dos outros comandos, exemplo:
-    # dispatcher.add_handler(CommandHandler("analise", analise_brasileirao))
-    # dispatcher.add_handler(CommandHandler("analise_campeonato", analise_campeonato))
+    # Aqui você pode adicionar os handlers dos comandos analise e analise_campeonato depois
 
     comandos = [
         BotCommand("start", "Iniciar o bot"),
