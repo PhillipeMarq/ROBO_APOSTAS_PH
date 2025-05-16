@@ -1,67 +1,42 @@
-from telegram import Update
-from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
-from analisador import analisar_jogos_proximos_dias
+from telegram import Update, BotCommand
+from telegram.ext import Updater, CommandHandler, CallbackContext
 
-# 🔐 Token do seu bot do Telegram
-TOKEN = "6842676519:AAHDFX5u8W-U27KY_V2nyEMJrP2KkD68L20"  # Token real preenchido
+TOKEN_BOT = "6050715735:AAGPqON4N5XdrSu9F8TH7K7OWP02N8N9hmE"
 
-# ✅ /start
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(
-        "🤖 Olá! Eu sou o Robô de Apostas PH!\n\n"
-        "Comandos disponíveis:\n"
-        "👉 /analise – Análises de todos os jogos com times brasileiros\n"
-        "👉 /analise [time x time] – Análise de um jogo específico\n"
-        "👉 /liga [nome da liga] – Ver jogos de uma liga (ex: /liga Brasileirão Série A)"
+def start(update: Update, context: CallbackContext) -> None:
+    update.message.reply_text(
+        "Olá! Eu sou seu robô de apostas. Use /ajuda para ver os comandos disponíveis."
     )
 
-# ✅ /analise → todos os jogos brasileiros
-async def analise(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("🔍 Buscando análises de jogos com times brasileiros...")
-    mensagens = analisar_jogos_proximos_dias()
-    for msg in mensagens:
-        await update.message.reply_text(msg, parse_mode="Markdown")
+def ajuda(update: Update, context: CallbackContext) -> None:
+    comandos = (
+        "/start - Iniciar o bot\n"
+        "/ajuda - Mostrar comandos\n"
+        "/analise - Análise de jogos do Brasileirão\n"
+        "/analise_campeonato <nome> - Análise de um campeonato específico"
+    )
+    update.message.reply_text(comandos)
 
-# ✅ /analise [jogo específico]
-async def analise_especifica(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if not context.args:
-        await update.message.reply_text("❗ Digite o nome do jogo. Ex: /analise Flamengo x Grêmio")
-        return
-
-    termo = " ".join(context.args).lower()
-    mensagens = analisar_jogos_proximos_dias()
-    encontrados = [msg for msg in mensagens if termo in msg.lower()]
-
-    if encontrados:
-        for msg in encontrados:
-            await update.message.reply_text(msg, parse_mode="Markdown")
-    else:
-        await update.message.reply_text("❌ Nenhum jogo encontrado com esse nome.")
-
-# ✅ /liga [nome da liga]
-async def liga(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if not context.args:
-        await update.message.reply_text("❗ Digite o nome da liga. Ex: /liga Brasileirão Série B")
-        return
-
-    liga_nome = " ".join(context.args).lower()
-    mensagens = analisar_jogos_proximos_dias()
-    encontrados = [msg for msg in mensagens if liga_nome in msg.lower()]
-
-    if encontrados:
-        for msg in encontrados:
-            await update.message.reply_text(msg, parse_mode="Markdown")
-    else:
-        await update.message.reply_text("❌ Nenhum jogo encontrado nessa liga.")
-
-# ✅ Iniciar o bot
 def iniciar_bot():
-    app = ApplicationBuilder().token(TOKEN).build()
+    updater = Updater(TOKEN_BOT, use_context=True)
 
-    app.add_handler(CommandHandler("start", start))
-    app.add_handler(CommandHandler("analise", analise))
-    app.add_handler(CommandHandler("analise", analise_especifica))
-    app.add_handler(CommandHandler("liga", liga))
+    dispatcher = updater.dispatcher
 
-    print("🤖 Bot está funcionando...")
-    app.run_polling()
+    dispatcher.add_handler(CommandHandler("start", start))
+    dispatcher.add_handler(CommandHandler("ajuda", ajuda))
+
+    # Você deve adicionar aqui os handlers dos outros comandos, exemplo:
+    # dispatcher.add_handler(CommandHandler("analise", analise_brasileirao))
+    # dispatcher.add_handler(CommandHandler("analise_campeonato", analise_campeonato))
+
+    comandos = [
+        BotCommand("start", "Iniciar o bot"),
+        BotCommand("ajuda", "Mostrar comandos"),
+        BotCommand("analise", "Análise de jogos do Brasileirão"),
+        BotCommand("analise_campeonato", "Análise de um campeonato específico"),
+    ]
+    updater.bot.set_my_commands(comandos)
+
+    print("Bot iniciado...")
+    updater.start_polling()
+    updater.idle()
