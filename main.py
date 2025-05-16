@@ -5,7 +5,7 @@ from telegram import Update
 from telegram.ext import CommandHandler, Updater, CallbackContext
 
 # === CONFIGURAÇÕES ===
-TELEGRAM_TOKEN = "6673050306:AAEM5tU5CNOKrGLoUilqzK7EmRZnbIrAHzY"
+TELEGRAM_TOKEN = "7645585466:AAFDbh4PbveXDId_bVynqElHWlQ5Ndts1a4"
 API_FOOTBALL_KEY = "b9b1dfef6bmsh94b835c2f9dc5eep1cb7dajsn1e85556f5e5b"
 API_FOOTBALL_HOST = "v3.football.api-sports.io"
 HEADERS = {
