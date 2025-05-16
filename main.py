@@ -13,7 +13,7 @@ HEADERS = {
     "x-rapidapi-host": API_FOOTBALL_HOST
 }
 
-# === FUNÇÕES PRINCIPAIS ===
+# === FUNÇÕES ===
 
 def get_games(date_str):
     url = f"https://{API_FOOTBALL_HOST}/fixtures"
@@ -78,12 +78,21 @@ def handle_analise(update: Update, context: CallbackContext):
                 print(f"Erro ao processar jogo: {e}")
                 continue
 
-# === MAIN ===
+# === MAIN COM WEBHOOK ===
 def main():
     updater = Updater(TELEGRAM_TOKEN)
     dp = updater.dispatcher
     dp.add_handler(CommandHandler("analise", handle_analise))
-    updater.start_polling()
+
+    # Porta e webhook para Render
+    PORT = int(os.environ.get("PORT", 10000))
+    HOSTNAME = os.environ.get("RENDER_EXTERNAL_HOSTNAME")
+    updater.start_webhook(
+        listen="0.0.0.0",
+        port=PORT,
+        url_path=TELEGRAM_TOKEN,
+        webhook_url=f"https://{HOSTNAME}/{TELEGRAM_TOKEN}"
+    )
     updater.idle()
 
 if __name__ == "__main__":
