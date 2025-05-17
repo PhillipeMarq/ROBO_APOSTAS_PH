@@ -1,4 +1,4 @@
---- utils/telegram_utils.py ---
+
 from telegram import Bot
 
 def enviar_mensagem(bot: Bot, texto: str):
@@ -23,4 +23,3 @@ def handle_comandos(update: dict, bot: Bot):
         bot.send_message(chat_id=chat_id, text="Comando não reconhecido.")
 
 from analysis import analisar_jogos, analisar_jogo_individual
---- utils/telegram_utils.py ---
