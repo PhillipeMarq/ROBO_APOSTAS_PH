@@ -1,4 +1,4 @@
---- utils/analysis.py ---
+
 import requests
 
 def analisar_jogos():
@@ -10,4 +10,3 @@ def analisar_jogos():
 def analisar_jogo_individual(jogo_nome):
     # Simulação de análise individual
     return f"Análise detalhada de {jogo_nome}:\n- Histórico positivo, chance de gols, equilíbrio nas odds."
---- utils/analysis.py ---
