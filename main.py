@@ -1,6 +1,7 @@
 from flask import Flask, request
 from telegram import Bot
 from apscheduler.schedulers.background import BackgroundScheduler
+import pytz
 import requests
 import logging
 from utils.analysis import analisar_jogos, analisar_jogo_individual
@@ -27,7 +28,7 @@ def analise_diaria():
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
-    scheduler = BackgroundScheduler()
+    scheduler = BackgroundScheduler(timezone=pytz.utc)  # <- CORREÇÃO AQUI
     scheduler.add_job(analise_diaria, 'cron', hour=9)
     scheduler.start()
     app.run(host="0.0.0.0", port=10000)
