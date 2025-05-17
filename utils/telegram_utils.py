@@ -2,7 +2,7 @@
 from telegram import Bot
 
 def enviar_mensagem(bot: Bot, texto: str):
-    bot.send_message(chat_id="SEU_CHAT_ID", text=texto)  # SEU CHAT ID
+    bot.send_message(chat_id="7178592047", text=texto)  # SEU CHAT ID
 
 def handle_comandos(update: dict, bot: Bot):
     message = update.get("message", {})
