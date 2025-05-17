@@ -7,7 +7,7 @@ import logging
 from utils.analysis import analisar_jogos, analisar_jogo_individual
 from utils.telegram_utils import enviar_mensagem, handle_comandos
 
-TOKEN = "COLE_SEU_TOKEN_AQUI"  # SEU TOKEN DO BOT
+TOKEN = "7645585466:AAFDbh4PbveXDId_bVynqElHWlQ5Ndts1a4"  # SEU TOKEN DO BOT
 bot = Bot(token=TOKEN)
 app = Flask(__name__)
 
